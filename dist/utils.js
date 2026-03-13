@@ -58,4 +58,77 @@ export function adjustAlpha(color, alpha) {
         return color;
     }
 }
+const IS_MAC = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+/**
+ * Check if the keyboard event matches any of the configured key combinations.
+ * @param e KeyboardEvent
+ * @param keyConfig string or string array.
+ */
+export function checkKey(e, keyConfig) {
+    const configs = Array.isArray(keyConfig) ? keyConfig : [keyConfig];
+    const key = e.key.toLowerCase();
+    return configs.some(config => {
+        const parts = config.toLowerCase().split('+').map(p => p.trim());
+        const mainKey = parts[parts.length - 1];
+        const modifiers = parts.slice(0, parts.length - 1);
+        const isCtrl = e.ctrlKey;
+        const isMeta = e.metaKey;
+        const isAlt = e.altKey;
+        const isShift = e.shiftKey;
+        const reqCtrl = modifiers.includes('ctrl') || modifiers.includes('control');
+        const reqMeta = modifiers.includes('meta') || modifiers.includes('cmd') || modifiers.includes('command');
+        const reqAlt = modifiers.includes('alt') || modifiers.includes('option');
+        const reqShift = modifiers.includes('shift');
+        const reqMod = modifiers.includes('mod');
+        // Strict modifier checks
+        // Ctrl
+        if (reqMod) {
+            if (IS_MAC && !isMeta)
+                return false;
+            if (!IS_MAC && !isCtrl)
+                return false;
+        }
+        else {
+            if (reqCtrl && !isCtrl)
+                return false;
+            if (!reqCtrl && isCtrl && mainKey !== 'control')
+                return false;
+            if (reqMeta && !isMeta)
+                return false;
+            if (!reqMeta && isMeta && mainKey !== 'meta')
+                return false;
+        }
+        if (reqAlt && !isAlt)
+            return false;
+        if (!reqAlt && isAlt && mainKey !== 'alt')
+            return false;
+        if (reqShift && !isShift)
+            return false;
+        if (!reqShift && isShift && mainKey !== 'shift')
+            return false;
+        return key === mainKey;
+    });
+}
+/**
+ * Check modifiers only (useful for mouse events or state checks)
+ * @param e MouseEvent | KeyboardEvent
+ * @param keyConfig string or string array (e.g. ['Control', 'Meta'])
+ */
+export function checkModifier(e, keyConfig) {
+    const configs = Array.isArray(keyConfig) ? keyConfig : [keyConfig];
+    return configs.some(config => {
+        const k = config.toLowerCase();
+        if (k === 'ctrl' || k === 'control')
+            return e.ctrlKey;
+        if (k === 'meta' || k === 'cmd' || k === 'command')
+            return e.metaKey;
+        if (k === 'alt')
+            return e.altKey;
+        if (k === 'shift')
+            return e.shiftKey;
+        if (k === 'mod')
+            return IS_MAC ? e.metaKey : e.ctrlKey;
+        return false;
+    });
+}
 //# sourceMappingURL=utils.js.map

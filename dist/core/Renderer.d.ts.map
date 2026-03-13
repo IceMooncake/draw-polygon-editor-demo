@@ -1,0 +1,1 @@
+{"version":3,"file":"Renderer.d.ts","sourceRoot":"","sources":["../../src/core/Renderer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,kBAAkB,CAAC;AACxC,OAAO,EAAE,aAAa,EAAE,MAAM,oBAAoB,CAAC;AAEnD,qBAAa,QAAQ;IACL,OAAO,CAAC,OAAO;gBAAP,OAAO,EAAE,aAAa;IAE1C,IAAI,CAAC,UAAU,EAAE,IAAI,GAAG,IAAI;CAqC/B"}
